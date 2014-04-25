@@ -27,13 +27,25 @@ StylusCompiler.prototype.read = function (readTree) {
       var stylusOptions = {
         filename: includePathSearcher.findFileSync(self.inputFile, includePaths),
         paths: includePaths,
+        use: []
       }
+
       _.merge(stylusOptions, self.stylusOptions)
       stylusOptions.paths = [path.dirname(stylusOptions.filename)].concat(stylusOptions.paths);
       data = fs.readFileSync(stylusOptions.filename, 'utf8');
 
+      var style = stylus(data);
+      style.set('filename', stylusOptions.filename).set('paths', stylusOptions.paths);
+
+      if (stylusOptions.use instanceof Array && stylusOptions.use.length > 0) {
+        var l = stylusOptions.use.length;
+        for (var i = 0; i < l; i++) {
+          style.use(stylusOptions.use[i]);
+        }
+      }
+
       var promise = new RSVP.Promise(function(resolve, reject) {
-        stylus.render(data, stylusOptions, function (e, css) {
+        style.render(function (e, css) {
           if (e) {
             reject(e);
           }
