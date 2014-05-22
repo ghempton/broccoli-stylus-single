@@ -2,6 +2,7 @@ var fs = require('fs')
 var path = require('path')
 var mkdirp = require('mkdirp')
 var includePathSearcher = require('include-path-searcher')
+var Writer = require('broccoli-writer')
 var quickTemp = require('quick-temp')
 var mapSeries = require('promise-map-series')
 var stylus = require('stylus')
@@ -10,6 +11,8 @@ var RSVP = require('rsvp');
 var nib = require('nib');
 
 module.exports = StylusCompiler
+StylusCompiler.prototype = Object.create(Writer.prototype)
+StylusCompiler.prototype.constructor = StylusCompiler
 function StylusCompiler (sourceTrees, inputFile, outputFile, options) {
   if (!(this instanceof StylusCompiler)) return new StylusCompiler(sourceTrees, inputFile, outputFile, options)
   this.sourceTrees = sourceTrees
@@ -18,10 +21,10 @@ function StylusCompiler (sourceTrees, inputFile, outputFile, options) {
   this.stylusOptions = options || {}
 }
 
-StylusCompiler.prototype.read = function (readTree) {
+StylusCompiler.prototype.write = function (readTree, destDir) {
   var self = this
-  quickTemp.makeOrRemake(this, '_tmpDestDir')
-  var destFile = this._tmpDestDir + '/' + this.outputFile
+  
+  var destFile = destDir + '/' + this.outputFile
   mkdirp.sync(path.dirname(destFile))
   return mapSeries(this.sourceTrees, readTree)
     .then(function (includePaths) {
@@ -52,14 +55,10 @@ StylusCompiler.prototype.read = function (readTree) {
           }
           fs.writeFileSync(destFile, css, { encoding: 'utf8' });
 
-          resolve(self._tmpDestDir);
+          resolve();
         });
       });
 
       return promise;
     });
-}
-
-StylusCompiler.prototype.cleanup = function () {
-  quickTemp.remove(this, '_tmpDestDir')
 }
