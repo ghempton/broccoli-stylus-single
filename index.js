@@ -7,6 +7,7 @@ var mapSeries = require('promise-map-series')
 var stylus = require('stylus')
 var _ = require('lodash')
 var RSVP = require('rsvp');
+var nib = require('nib');
 
 module.exports = StylusCompiler
 function StylusCompiler (sourceTrees, inputFile, outputFile, options) {
@@ -27,7 +28,7 @@ StylusCompiler.prototype.read = function (readTree) {
       var stylusOptions = {
         filename: includePathSearcher.findFileSync(self.inputFile, includePaths),
         paths: includePaths,
-        use: []
+        use: [nib()]
       }
 
       _.merge(stylusOptions, self.stylusOptions)
@@ -62,4 +63,3 @@ StylusCompiler.prototype.read = function (readTree) {
 StylusCompiler.prototype.cleanup = function () {
   quickTemp.remove(this, '_tmpDestDir')
 }
-
