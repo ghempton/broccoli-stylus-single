@@ -24,15 +24,15 @@
     "css"
   ],
   "dependencies": {
-    "mkdirp": "^0.3.5",
+    "mkdirp": "^0.5.0",
     "lodash": "~2.4.1",
-    "quick-temp": "^0.1.0",
+    "quick-temp": "^0.1.2",
     "promise-map-series": "^0.2.0",
     "include-path-searcher": "^0.1.0",
-    "stylus": "~0.46.3",
-    "rsvp": "~3.0.6",
-    "nib": "~1.0.2",
-    "broccoli-writer": "~0.1.1"
+    "stylus": "~0.48.1",
+    "rsvp": "~3.0.13",
+    "nib": "~1.0.3",
+    "broccoli-caching-writer": "~0.4.2"
   },
   "readmeFilename": "README.md",
   "bugs": {
